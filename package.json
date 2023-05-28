@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "express": "^4.18.2",
+    "lsof": "^0.1.0",
+    "node-cron": "^3.0.2",
+    "node-fetch": "^3.3.1",
+    "pg": "^8.11.0"
+  },
+  "name": "7timer-application",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "author": "djager al-yussef",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "prettier": "2.8.8"
+  }
+}
