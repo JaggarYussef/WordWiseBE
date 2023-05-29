@@ -19,10 +19,10 @@ app.get("/", (req, res, next) => {
 });
 
 // Location CRUD routes
-app.use("/location", router);
+app.use("/api/location", router);
 
 // Temprature GET routes
-app.use("/temprature", router);
+app.use("/api/temprature", router);
 
 // Error handling
 app.use((error, req, res, next) => {

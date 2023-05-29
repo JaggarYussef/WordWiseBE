@@ -38,13 +38,12 @@ const pool = new pg.Pool({
   password: "docker",
   database: "7timer",
 });
-
+// WHAT IF WE PUT THIS FUNCTION IN TRY CATCH BLOCK WILL IT BE MORE ROBUST?
 export const poolQuery = async (poolQueryString) => {
   const start = Date.now();
   const result = await pool.query(poolQueryString);
   console.dir("results from database", result);
   const duration = Date.now() - start;
-  //TODO ADD PARAM TO MAKE MESSAGE SPECIFIC FOR EACH poolQuery
   console.log("excuted poolQuery", {
     poolQueryString,
     duration,
