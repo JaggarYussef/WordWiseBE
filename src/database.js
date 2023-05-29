@@ -2,10 +2,9 @@ import pg from "pg";
 /* 
 LOCATION  TABLE SCRIPT 
 
-CREATE TABLE IF NOT EXISTS public.location
 (
-    id integer NOT NULL DEFAULT nextval('location_id_seq'::regclass),
-    slugname character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    id integer NOT NULL,
+    slugname character varying(255) NOT NULL,
     latitude real,
     longitude real,
     creationdate date,
@@ -16,11 +15,10 @@ CREATE TABLE IF NOT EXISTS public.location
 */
 
 /*
- * TEMPERATURE DB SCRIPT
- CREATE TABLE IF NOT EXISTS public.tempratures
+ * TEMPERATURE TABLE SCRIPT
 (
-    id integer NOT NULL DEFAULT nextval('tempratures_id_seq'::regclass),
-    slugname character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    id integer NOT NULL,
+    slugname character varying(255) NOT NULL,
     min_temprature integer NOT NULL,
     max_temprature integer NOT NULL,
     creation_date date NOT NULL,
@@ -32,13 +30,13 @@ CREATE TABLE IF NOT EXISTS public.location
 )
  */
 const pool = new pg.Pool({
-  host: "0.0.0.0",
+  host: "seven-timer.cqqxczfso2zd.eu-north-1.rds.amazonaws.com",
   port: "5432",
   user: "postgres",
-  password: "docker",
+  password: "Z8z94!sBoJQC",
   database: "7timer",
 });
-// WHAT IF WE PUT THIS FUNCTION IN TRY CATCH BLOCK WILL IT BE MORE ROBUST?
+
 export const poolQuery = async (poolQueryString) => {
   const start = Date.now();
   const result = await pool.query(poolQueryString);

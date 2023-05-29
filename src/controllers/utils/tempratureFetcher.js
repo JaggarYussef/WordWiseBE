@@ -3,15 +3,22 @@ import { slugify } from "transliteration";
 import coordinatesValidator from "./coordinatesValidator.js";
 const currentDate = new Date().toISOString().slice(0, 10);
 
-// TODO : throw error if latitude or longitude are not numbers or are not in the range
+/**
+ * Fetches temperature data for a given latitude and longitude.
+ * @param {number} latitude - The latitude coordinate.
+ * @param {number} longitude - The longitude coordinate.
+ * @param {boolean} [slugname=true] - Whether to fetch the slugname for the location. Defaults to true.
+ * @returns {Promise<Object>} - A promise that resolves to an object containing temperature and location data.
+ * @throws {Error} - If the coordinates are invalid.
+ */
+
 const fetchTemprature = async (latitude, longitude, slugname = true) => {
   if (!coordinatesValidator(latitude, longitude)) {
     console.log("fetchTemprature", latitude, longitude, slugname);
-
     throw new Error("Invalid coordinates");
   }
+
   // Fetching temprature
-  // TODO:
   const temperatureUrl = `http://www.7timer.info/bin/api.pl?lon=${longitude}&lat=${latitude}&product=astro&output=json`;
   const tempratureResponse = await fetch(temperatureUrl);
   const tempratureData = await tempratureResponse.json();
@@ -36,6 +43,8 @@ const fetchTemprature = async (latitude, longitude, slugname = true) => {
       const locationNameData = await locationNameResponse.json();
       // grabs the smallest location property from the locationNameData object
       //prettier-ignore
+      console.log('test object', new Map(Object.entries(locationNameData.address)));
+      const acceptedLocationProperties = [];
       const addressArray = Object.values(locationNameData.address);
       console.log("addressArray", addressArray);
       const smallestLocationProperty = addressArray[1];

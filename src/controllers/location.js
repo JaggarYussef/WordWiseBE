@@ -1,40 +1,50 @@
-import { poolQuery } from "../database/database.js";
+import { poolQuery } from "../database.js";
 import fetchTemprature from "./utils/tempratureFetcher.js";
 import validateCoordinates from "./utils/coordinatesValidator.js";
 
 const currentDate = new Date().toISOString().slice(0, 10);
-// Takes longitude and latitude coordinates from the request body
-// and assigns a slugname and creation date to the location.
-export const createLocation = async (req, res, next) => {
+
+/**
+ * Creates a new location and its associated temperature records.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the location is created.
+ */
+export const createLocation = async (req, res) => {
   const { longitude, latitude } = req.body;
 
   if (!validateCoordinates(latitude, longitude)) {
     res.status(400).send("Invalid latitude or longitude coordinates");
     return;
   }
-  if (!longitude === undefined || latitude === undefined) {
+
+  if (longitude === undefined || latitude === undefined) {
     res.status(400).send("Longitude or latitude is missing");
-    return next();
+    return;
   }
-  //TODO: THROW ERROR IF LOCATION ALREADY EXISTS
-  // throw error is longitute or latitude are not numbers
-  //prettier-ignore
-  const { minTemp, maxTemp, slugname } = await fetchTemprature(latitude, longitude, true);
+
+  // Fetches temperature data for the location
+  const { minTemp, maxTemp, slugname } = await fetchTemprature(
+    latitude,
+    longitude,
+    true
+  );
+
   const queryString = `
-  INSERT INTO "location" (slugname, longitude, latitude, creationdate) VALUES ('${slugname.trim()}', '${longitude}', '${latitude}', '${currentDate}') RETURNING *;
-  INSERT INTO "tempratures" (slugname, min_temprature, max_temprature, creation_date) VALUES ('${slugname.trim()}', '${minTemp}', '${maxTemp}', '${currentDate}' ) RETURNING *;
+    INSERT INTO "location" (slugname, longitude, latitude, creationdate) VALUES ('${slugname.trim()}', '${longitude}', '${latitude}', '${currentDate}') RETURNING *;
+    INSERT INTO "tempratures" (slugname, min_temprature, max_temprature, creation_date) VALUES ('${slugname.trim()}', '${minTemp}', '${maxTemp}', '${currentDate}' ) RETURNING *;
   `;
 
-  // Execute and handle the query
   try {
+    // Executes the queries and handles the results
     const queryResult = await poolQuery(queryString);
-    // console.log("queryResult", queryResult);
     const insertionQueryRows = queryResult[0].rows[0];
     const { id: resultId, slugname: resultSlugname } = insertionQueryRows;
+
     res.status(200).send(
       `
-      Location with ID: ${resultId} has been added
-      Use slugname ${resultSlugname} to retrieve the data related to the location
+      Location with ID: ${resultId} has been added.
+      Use slugname ${resultSlugname} to retrieve the data related to the location.
       `
     );
   } catch (error) {
@@ -42,27 +52,31 @@ export const createLocation = async (req, res, next) => {
   }
 };
 
-// Retrieves a location from the database based on ID or the slugname
 export const getLocation = async (req, res, next) => {
   const { id, slugname } = req.body;
+
+  // Check if both ID and slugname are missing
   if (id === undefined && slugname === undefined) {
     res.status(400).send("ID and slugname are missing");
-    return next();
+    return;
   }
+
   let queryString = "";
+
   slugname === undefined
     ? (queryString = `SELECT * FROM "location" WHERE id = ${id.trim()}`)
     : (queryString = `SELECT * FROM "location" WHERE slugname = '${slugname.trim()}'`);
 
-  // Execute and handle SELECT single location query;
-  //TODO fix resultId and resultSlugname in the response
   try {
+    // Execute the SELECT query to retrieve the location information
     const queryResult = await poolQuery(queryString);
     console.log("queryResult", queryResult);
+
     if (queryResult.rowCount === 0) {
       // No location found
       res.status(404).send("Location not found");
     } else {
+      // Extract the relevant location data from the query result
       const {
         id: resultId,
         slugname: resultSlugname,
@@ -70,6 +84,7 @@ export const getLocation = async (req, res, next) => {
         longitude,
         creationdate,
       } = queryResult.rows[0];
+
       res.send({
         resultId,
         resultSlugname,
@@ -83,41 +98,52 @@ export const getLocation = async (req, res, next) => {
   }
 };
 
-// Deletes a location from the database based on ID or the slugname
+// Delete location by slugname or id
 export const deleteLocation = async (req, res, next) => {
   const { id, slugname } = req.body;
+
   if (id === undefined && slugname === undefined) {
     res.status(400).send("ID and slugname are missing");
-    return next();
+    return;
   }
+
   let locationQueryString = "";
-  slugname === undefined
-    ? (locationQueryString = `DELETE  FROM "location" WHERE id = ${id.trim()} RETURNING id, slugname;`)
-    : (locationQueryString = `DELETE  FROM "location" WHERE slugname = '${slugname.trim()}' RETURNING id, slugname;`);
+
+  if (slugname === undefined) {
+    locationQueryString = `DELETE  FROM "location" WHERE id = ${id.trim()} RETURNING id, slugname;`;
+  } else {
+    locationQueryString = `DELETE  FROM "location" WHERE slugname = '${slugname.trim()}' RETURNING id, slugname;`;
+  }
+
   //ignore prettier
   const tempratureQueryString = `DELETE  FROM "tempratures" WHERE slugname = '${slugname.trim()}' RETURNING id, slugname`;
+
   const queryString = `
    ${locationQueryString}
    ${tempratureQueryString}
    `;
 
-  // Ecexute and handle DELETE query
   try {
+    // Execute DELETE queries
     const queryResult = await poolQuery(queryString);
-    if (queryResult.rowCount === 0) {
+
+    if (queryResult[0].rowCount === 0) {
       // No location found
       res.status(404).send("Location does not exist");
     }
+    // Extract the relevant location data from the query result
     const { id: resultId, slugname: resultSlugname } = queryResult.rows[0];
+
     res.status(200).send(`
     Location with ID: ${resultId} and slugname ${resultSlugname} has been deleted
     `);
   } catch (error) {
+    console.log("error", error);
     res.status(500).send({ error: error.message });
   }
 };
 
-// Updates a location's slug based on ID
+// Update location by slugname or id
 export const updateLocation = async (req, res, next) => {
   const { oldSlugname, newSlugname } = req.body;
   if (oldSlugname === undefined || newSlugname === undefined) {
@@ -149,6 +175,8 @@ export const updateLocation = async (req, res, next) => {
       return;
     }
     const queryResultRows = queryResult[0].rows[0];
+
+    // Extract the relevant location data from the query result
     const {
       id,
       slugname,
@@ -179,10 +207,14 @@ export const getAllLocations = async (req, res, next) => {
   try {
     const queryResult = await poolQuery(queryString);
     const queryResultRows = queryResult.rows;
+
+    // If no locations are found, return a 404 response
     if (queryResult.rowCount === 0) {
       res.status(404).send("No available locations in the database");
       return;
     }
+
+    // Send a 200 response with the retrieved locations
     res.status(200).send(queryResultRows);
   } catch (error) {
     res.status(500).send({ error: error.message });
