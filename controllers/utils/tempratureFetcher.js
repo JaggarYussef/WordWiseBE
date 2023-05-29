@@ -1,13 +1,13 @@
 import fetch from "node-fetch";
-
+import { slugify } from "transliteration";
+import coordinatesValidator from "./coordinatesValidator.js";
 const currentDate = new Date().toISOString().slice(0, 10);
 
-//TOOD : Move to env
-const openCageKey = "19dc3323ba054891b255b5081f8cdd96";
-
 // TODO : throw error if latitude or longitude are not numbers or are not in the range
-const fetchTemprature = async (latitude, longitude, slugname = null) => {
-  console.log("latitude", typeof latitude);
+const fetchTemprature = async (latitude, longitude, slugname = true) => {
+  if (!coordinatesValidator(latitude, longitude)) {
+    throw new Error("Invalid coordinates");
+  }
   // Fetching temprature
   // TODO:
   const temperatureUrl = `http://www.7timer.info/bin/api.pl?lon=${longitude}&lat=${latitude}&product=astro&output=json`;
@@ -24,29 +24,30 @@ const fetchTemprature = async (latitude, longitude, slugname = null) => {
       minTemp = element.temp2m;
     }
   });
-  console.log("min max", minTemp, maxTemp);
   // Fetching slugname for location
-  // TODO:
-  // 1. Last elemet in array of components is the name of the location
-  // 2. Replace spaces with dashes
-  // 3. Convert to lowercase
-  // 4. Add numbers to make it unique. lat + long?
-  const locationNameUrl = `https://api.opencagedata.com/geocode/v1/json?key=${openCageKey}&q=${latitude}+${longitude}&pretty=1&no_annotations=1`;
-  const locationNameResponse = await fetch(locationNameUrl);
-  const locationNameData = await locationNameResponse.json();
-  const formattedAdress = locationNameData.results[0].formatted;
-  const adressArray = formattedAdress.split(", ");
-  if (slugname === null) {
-    slugname = `region-${latitude}-${longitude}`;
-  }
-  // if (adressArray.length > 0) {
-  //   slugname = adressArray[0].trim().replace("", "-");
-  // } else {
-  //   slugname = "region";
-  // }
-  // console.log("slugname", slugname);
 
-  // console.log("locationNameData", locationNameData);
+  if (slugname === true) {
+    try {
+      const locationNameUrl = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+      const locationNameResponse = await fetch(locationNameUrl);
+      console.log("locationNameResponse", locationNameResponse);
+      const locationNameData = await locationNameResponse.json();
+      // grabs the smallest location property from the locationNameData object
+      //prettier-ignore
+      const addressArray = Object.values(locationNameData.address);
+      console.log("addressArray", addressArray);
+      const smallestLocationProperty = addressArray[1];
+      console.log("smallestLocationProperty", smallestLocationProperty);
+      slugname = slugify(smallestLocationProperty);
+      console.log("slugnameProp", slugname);
+      //prettier-ignore
+      console.log("smallestLocationProperty", slugify(smallestLocationProperty));
+    } catch (error) {
+      console.log("error", error);
+      slugname = `region-${latitude}-${longitude}`;
+    }
+  }
+
   return {
     maxTemp: maxTemp,
     minTemp: minTemp,
