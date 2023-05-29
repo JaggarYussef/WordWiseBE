@@ -4,6 +4,8 @@ const currentDate = new Date().toISOString().slice(0, 10);
 
 //TOOD : Move to env
 const openCageKey = "19dc3323ba054891b255b5081f8cdd96";
+
+// TODO : throw error if latitude or longitude are not numbers or are not in the range
 const fetchTemprature = async (latitude, longitude, slugname = null) => {
   console.log("latitude", typeof latitude);
   // Fetching temprature
