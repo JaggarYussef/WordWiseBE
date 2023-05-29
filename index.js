@@ -36,11 +36,3 @@ app.listen(8080, () => console.log("Listening on port 8080"));
 // cron.schedule("*/30 * * * * *", () => {
 //   updateTemperatures();
 // });
-
-// client
-//   .connect()
-//   .then(() => console.log("Connected successfully"))
-//   .catch((err) => console.log(err))
-//   .then(() => client.query("SELECT * FROM location"))
-//   .then((res) => console.log(res.rows))
-//   .finally(() => client.end());

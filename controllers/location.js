@@ -1,11 +1,17 @@
 import { poolQuery } from "../database/database.js";
 import fetchTemprature from "./utils/tempratureFetcher.js";
+import validateCoordinates from "./utils/coordinatesValidator.js";
 
 const currentDate = new Date().toISOString().slice(0, 10);
 // Takes longitude and latitude coordinates from the request body
 // and assigns a slugname and creation date to the location.
 export const createLocation = async (req, res, next) => {
   const { longitude, latitude } = req.body;
+
+  if (!validateCoordinates(latitude, longitude)) {
+    res.status(400).send("Invalid latitude or longitude coordinates");
+    return;
+  }
   if (!longitude === undefined || latitude === undefined) {
     res.status(400).send("Longitude or latitude is missing");
     return next();
@@ -13,7 +19,7 @@ export const createLocation = async (req, res, next) => {
   //TODO: THROW ERROR IF LOCATION ALREADY EXISTS
   // throw error is longitute or latitude are not numbers
   //prettier-ignore
-  const { minTemp, maxTemp, slugname } = await fetchTemprature(latitude, longitude, null);
+  const { minTemp, maxTemp, slugname } = await fetchTemprature(latitude, longitude, true);
   const queryString = `
   INSERT INTO "location" (slugname, longitude, latitude, creationdate) VALUES ('${slugname.trim()}', '${longitude}', '${latitude}', '${currentDate}') RETURNING *;
   INSERT INTO "tempratures" (slugname, min_temprature, max_temprature, creation_date) VALUES ('${slugname.trim()}', '${minTemp}', '${maxTemp}', '${currentDate}' ) RETURNING *;
@@ -22,6 +28,7 @@ export const createLocation = async (req, res, next) => {
   // Execute and handle the query
   try {
     const queryResult = await poolQuery(queryString);
+    // console.log("queryResult", queryResult);
     const insertionQueryRows = queryResult[0].rows[0];
     const { id: resultId, slugname: resultSlugname } = insertionQueryRows;
     res.status(200).send(
@@ -126,11 +133,11 @@ export const updateLocation = async (req, res, next) => {
     return;
   }
 
-  const encodedNewSlugname = encodeURIComponent(newSlugname);
-  const encodedOldSlugname = encodeURIComponent(oldSlugname);
+  const encodedNewSlugname = encodeURIComponent(newSlugname.trim());
+  const encodedOldSlugname = encodeURIComponent(oldSlugname.trim());
   const queryString = `
-  UPDATE "location" SET slugname = '${encodedNewSlugname}' WHERE slugname = '${encodedOldSlugname.trim()}' RETURNING *;
-  UPDATE "tempratures" SET slugname = '${encodedNewSlugname}' WHERE slugname = '${encodedOldSlugname.trim()}' RETURNING *;
+  UPDATE "location" SET slugname = '${encodedNewSlugname}' WHERE slugname = '${encodedOldSlugname}' RETURNING *;
+  UPDATE "tempratures" SET slugname = '${encodedNewSlugname}' WHERE slugname = '${encodedOldSlugname}' RETURNING *;
   `;
 
   // Execute and handle UPDATE query
