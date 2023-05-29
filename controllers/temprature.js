@@ -1,5 +1,5 @@
 import { poolQuery } from "../database/database.js";
-// import updateTemperatures from "./utils/temperatureUpdater.js";
+import updateTemperatures from "./utils/temperatureUpdater.js";
 
 export const getAllTempratures = async (req, res, next) => {
   const queryString = `SELECT * FROM "tempratures"`;

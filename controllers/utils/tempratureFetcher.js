@@ -6,6 +6,8 @@ const currentDate = new Date().toISOString().slice(0, 10);
 // TODO : throw error if latitude or longitude are not numbers or are not in the range
 const fetchTemprature = async (latitude, longitude, slugname = true) => {
   if (!coordinatesValidator(latitude, longitude)) {
+    console.log("fetchTemprature", latitude, longitude, slugname);
+
     throw new Error("Invalid coordinates");
   }
   // Fetching temprature

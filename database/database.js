@@ -51,3 +51,4 @@ export const poolQuery = async (poolQueryString) => {
   });
   return result;
 };
+export const client = await pool.connect();
