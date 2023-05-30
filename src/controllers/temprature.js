@@ -58,8 +58,8 @@ export const getTempraturesWithDate = async (req, res, next) => {
    WHERE slugname = '${encodedSlugname}' AND
   "creation_date" BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'`;
 
+  // Execute the query and handle the results
   try {
-    // Execute the query and handle the result
     const queryResult = await poolQuery(queryString);
     console.log("queryResult", queryResult);
 

@@ -4,28 +4,33 @@ import coordinatesValidator from "./coordinatesValidator.js";
 const currentDate = new Date().toISOString().slice(0, 10);
 
 /**
- * Fetches temperature data for a given latitude and longitude.
+ * Fetches temperature data based on latitude and longitude coordinates.
+ * @async
  * @param {number} latitude - The latitude coordinate.
  * @param {number} longitude - The longitude coordinate.
- * @param {boolean} [slugname=true] - Whether to fetch the slugname for the location. Defaults to true.
- * @returns {Promise<Object>} - A promise that resolves to an object containing temperature and location data.
- * @throws {Error} - If the coordinates are invalid.
+ * @param {boolean} [slugname=true] - Optional flag indicating whether to fetch the slugname for the location.
+ * @throws {Error} Throws an error if the coordinates are invalid.
+ * @returns {Promise<object>} The temperature data object.
+ * @property {number} maxTemp - The maximum temperature.
+ * @property {number} minTemp - The minimum temperature.
+ * @property {string} slugname - The slugname of the location.
+ * @property {string} date - The current date.
  */
-
-const fetchTemprature = async (latitude, longitude, slugname = true) => {
+const fetchTemperature = async (latitude, longitude, slugname = true) => {
+  // Check if the coordinates are valid
   if (!coordinatesValidator(latitude, longitude)) {
-    console.log("fetchTemprature", latitude, longitude, slugname);
     throw new Error("Invalid coordinates");
   }
 
-  // Fetching temprature
+  // Fetching temperature
   const temperatureUrl = `http://www.7timer.info/bin/api.pl?lon=${longitude}&lat=${latitude}&product=astro&output=json`;
-  const tempratureResponse = await fetch(temperatureUrl);
-  const tempratureData = await tempratureResponse.json();
-  // console.log("tempratureData", tempratureData);
-  let minTemp = tempratureData.dataseries[0].temp2m;
-  let maxTemp = tempratureData.dataseries[0].temp2m;
-  tempratureData.dataseries.forEach((element) => {
+  const temperatureResponse = await fetch(temperatureUrl);
+  const temperatureData = await temperatureResponse.json();
+
+  let minTemp = temperatureData.dataseries[0].temp2m;
+  let maxTemp = temperatureData.dataseries[0].temp2m;
+
+  temperatureData.dataseries.forEach((element) => {
     if (element.temp2m > maxTemp) {
       maxTemp = element.temp2m;
     }
@@ -33,29 +38,52 @@ const fetchTemprature = async (latitude, longitude, slugname = true) => {
       minTemp = element.temp2m;
     }
   });
-  // Fetching slugname for location
 
+  // Fetching slugname for location
   if (slugname === true) {
     try {
       const locationNameUrl = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
       const locationNameResponse = await fetch(locationNameUrl);
-      console.log("locationNameResponse", locationNameResponse);
       const locationNameData = await locationNameResponse.json();
-      // grabs the smallest location property from the locationNameData object
-      //prettier-ignore
-      console.log('test object', new Map(Object.entries(locationNameData.address)));
-      const acceptedLocationProperties = [];
-      const addressArray = Object.values(locationNameData.address);
-      console.log("addressArray", addressArray);
-      const smallestLocationProperty = addressArray[1];
-      console.log("smallestLocationProperty", smallestLocationProperty);
-      slugname = slugify(smallestLocationProperty);
-      console.log("slugnameProp", slugname);
-      //prettier-ignore
-      console.log("smallestLocationProperty", slugify(smallestLocationProperty));
+      const shortenedLatitude = Number(parseFloat(latitude).toFixed(2));
+      const shortenedLongitude = Number(parseFloat(longitude).toFixed(2));
+
+      //grab the first/closest settlement property that exists
+      const locationProperties = new Map(
+        Object.entries(locationNameData.address)
+      );
+      const settlementHierarchy = [
+        "neighbourhood",
+        "village",
+        "suburb",
+        "locality",
+        "town",
+        "municipality",
+        "district",
+        "county",
+        "city",
+        "state",
+        "region",
+      ];
+
+      for (const settlement of settlementHierarchy) {
+        if (locationProperties.has(settlement)) {
+          slugname = slugify(locationProperties.get(settlement.trim()));
+          break;
+        }
+      }
+
+      if (slugname === true) {
+        console.log(
+          `No settlement property found for ${shortenedLatitude}, ${shortenedLongitude}`
+        );
+        // Assigns default slugname if fetching fails
+        slugname = `region-${shortenedLatitude}-${shortenedLongitude}`;
+      }
     } catch (error) {
       console.log("error", error);
-      slugname = `region-${latitude}-${longitude}`;
+      // Assigns default slugname if fetching fails
+      slugname = `region-${shortenedLatitude}-${shortenedLongitude}`;
     }
   }
 
@@ -67,4 +95,4 @@ const fetchTemprature = async (latitude, longitude, slugname = true) => {
   };
 };
 
-export default fetchTemprature;
+export default fetchTemperature;

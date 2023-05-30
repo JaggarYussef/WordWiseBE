@@ -1,3 +1,6 @@
+import { client } from "../../database.js";
+import fetchTemprature from "./tempratureFetcher.js";
+
 /**
  * Updates temperature records for locations stored in the database.
  * @returns {Promise<void>} - A promise that resolves when the temperature records are updated.
@@ -47,3 +50,4 @@ const updateTemperatures = async () => {
     client.release();
   }
 };
+export default updateTemperatures;
