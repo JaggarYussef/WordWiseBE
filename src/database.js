@@ -35,7 +35,7 @@ const pool = new pg.Pool({
   host: "seven-timer.cqqxczfso2zd.eu-north-1.rds.amazonaws.com",
   port: "5432",
   user: "postgres",
-  password: process.env.DATABASE_PASSWORD,
+  password: "Z8z94!sBoJQC",
   database: "7timer",
 });
 
