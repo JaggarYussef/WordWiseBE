@@ -34,6 +34,6 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(8080, () => console.log("server is running"));
-cron.schedule("1 0 * * *", () => {
+cron.schedule("8 1 * * *", () => {
   updateTemperatures();
 });
