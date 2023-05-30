@@ -33,7 +33,7 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message });
 });
 
-app.listen(8080, () => console.log("Listening on port 8080"));
+app.listen(8080, () => console.log("server is running"));
 cron.schedule("1 0 * * *", () => {
   updateTemperatures();
 });
