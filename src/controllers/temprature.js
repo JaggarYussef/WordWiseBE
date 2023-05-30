@@ -74,6 +74,3 @@ export const getTempraturesWithDate = async (req, res, next) => {
     res.status(500).send({ error: error.message });
   }
 };
-export const dummy = () => {
-  updateTemperatures();
-};
