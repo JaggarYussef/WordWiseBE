@@ -8,7 +8,7 @@ import updateTemperatures from "./utils/temperatureUpdater.js";
  * @returns {Promise<void>} - A promise that resolves when the temperature records are retrieved and sent as a response.
  */
 export const getAllTempratures = async (req, res) => {
-  const queryString = `SELECT * FROM "tempratures"`;
+  const queryString = `SELECT "slugname", to_char(date,'YYYY-MM-DD') AS date, "min_temprature", "max_temprature" FROM "tempratures" ORDER BY date `;
 
   // Execute and handle SELECT all temperatures query;
   try {
@@ -54,7 +54,7 @@ export const getTempraturesWithDate = async (req, res, next) => {
   const formattedEndDate = new Date(endDate).toISOString().slice(0, 10);
 
   const queryString = `
-   SELECT "slugname", "date", "min_temprature", "max_temprature" FROM "tempratures"
+   SELECT "slugname", to_char(date,'YYYY-MM-DD') AS date, "min_temprature", "max_temprature" FROM "tempratures"
    WHERE slugname = '${encodedSlugname}' AND
   "date" BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'`;
 

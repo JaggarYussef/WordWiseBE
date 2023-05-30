@@ -51,8 +51,8 @@ export const createLocation = async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 };
-
-export const getLocation = async (req, res, next) => {
+//Retrieves the location information based on the ID or slugname
+export const getLocation = async (req, res) => {
   const { id, slugname } = req.body;
 
   // Check if both ID and slugname are missing
@@ -75,6 +75,7 @@ export const getLocation = async (req, res, next) => {
     if (queryResult.rowCount === 0) {
       // No location found
       res.status(404).send("Location not found");
+      return;
     } else {
       // Extract the relevant location data from the query result
       const {
@@ -99,7 +100,7 @@ export const getLocation = async (req, res, next) => {
 };
 
 // Delete location by slugname or id
-export const deleteLocation = async (req, res, next) => {
+export const deleteLocation = async (req, res) => {
   const { id, slugname } = req.body;
 
   if (id === undefined && slugname === undefined) {
@@ -137,7 +138,7 @@ export const deleteLocation = async (req, res, next) => {
 };
 
 // Update location by slugname or id
-export const updateLocation = async (req, res, next) => {
+export const updateLocation = async (req, res) => {
   const { oldSlugname, newSlugname } = req.body;
   if (oldSlugname === undefined || newSlugname === undefined) {
     res.status(400).send("oldSlugname or newSlugname is missing");
@@ -193,7 +194,7 @@ export const updateLocation = async (req, res, next) => {
 };
 
 // Retrieves all locations from the database
-export const getAllLocations = async (req, res, next) => {
+export const getAllLocations = async (req, res) => {
   const queryString = `SELECT * FROM "location"`;
 
   // Execute and handle SELECT all locations query
