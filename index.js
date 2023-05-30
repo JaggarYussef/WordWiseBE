@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import router from "./src/routes.js";
 import updateTemperatures from "./src/controllers/utils/temperatureUpdater.js";
-// import updateTemperatures from "./controllers/utils/temperatureUpdater.js";
 import cron from "node-cron";
 const app = express();
 app.use(bodyParser.json());
