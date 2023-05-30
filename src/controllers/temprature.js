@@ -54,9 +54,9 @@ export const getTempraturesWithDate = async (req, res, next) => {
   const formattedEndDate = new Date(endDate).toISOString().slice(0, 10);
 
   const queryString = `
-   SELECT "slugname", "creation_date", "min_temprature", "max_temprature" FROM "tempratures"
+   SELECT "slugname", "date", "min_temprature", "max_temprature" FROM "tempratures"
    WHERE slugname = '${encodedSlugname}' AND
-  "creation_date" BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'`;
+  "date" BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'`;
 
   // Execute the query and handle the results
   try {

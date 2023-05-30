@@ -1,4 +1,6 @@
 import pg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 /* 
 LOCATION  TABLE SCRIPT 
 
@@ -21,7 +23,7 @@ LOCATION  TABLE SCRIPT
     slugname character varying(255) NOT NULL,
     min_temprature integer NOT NULL,
     max_temprature integer NOT NULL,
-    creation_date date NOT NULL,
+    date date NOT NULL,
     CONSTRAINT tempratures_pkey PRIMARY KEY (id),
     CONSTRAINT foreign_key FOREIGN KEY (slugname)
         REFERENCES public.location (slugname) MATCH SIMPLE
@@ -30,10 +32,10 @@ LOCATION  TABLE SCRIPT
 )
  */
 const pool = new pg.Pool({
-  host: "seven-timer.cqqxczfso2zd.eu-north-1.rds.amazonaws.com",
+  host: process.env.DATABASE_HOST,
   port: "5432",
   user: "postgres",
-  password: "Z8z94!sBoJQC",
+  password: process.env.DATABASE_PASSWORD,
   database: "7timer",
 });
 

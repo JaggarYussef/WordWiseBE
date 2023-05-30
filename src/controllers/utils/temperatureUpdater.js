@@ -27,7 +27,7 @@ const updateTemperatures = async () => {
         );
 
         const tempratureUpdateQuery = `
-          INSERT INTO "tempratures"("slugname", "min_temprature", "max_temprature","creation_date")
+          INSERT INTO "tempratures"("slugname", "min_temprature", "max_temprature","date")
           VALUES('${slugname}', ${minTemp}, ${maxTemp}, '${date}')
         `;
 
