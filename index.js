@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import router from "./src/routes.js";
-
+import updateTemperatures from "./src/controllers/utils/temperatureUpdater.js";
 // import updateTemperatures from "./controllers/utils/temperatureUpdater.js";
 import cron from "node-cron";
 const app = express();
@@ -34,6 +34,6 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(8080, () => console.log("Listening on port 8080"));
-// cron.schedule("*/30 * * * * *", () => {
-//   updateTemperatures();
-// });
+cron.schedule("1 0 * * *", () => {
+  updateTemperatures();
+});

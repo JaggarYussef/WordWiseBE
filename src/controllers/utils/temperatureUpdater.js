@@ -1,4 +1,4 @@
-import { client } from "../../database.js";
+import { getClient } from "../../database.js";
 import fetchTemprature from "./tempratureFetcher.js";
 
 /**
@@ -6,6 +6,7 @@ import fetchTemprature from "./tempratureFetcher.js";
  * @returns {Promise<void>} - A promise that resolves when the temperature records are updated.
  */
 const updateTemperatures = async () => {
+  const client = await getClient();
   try {
     await client.query("BEGIN");
 
@@ -18,6 +19,7 @@ const updateTemperatures = async () => {
     const temperatureRecords = await Promise.all(
       queryResult.rows.map(async (location) => {
         const { slugname, latitude, longitude } = location;
+        const randomNumber = Math.floor(Math.random() * 10000) + 1;
 
         // Fetches temperature data for the location
         const { minTemp, maxTemp, date } = await fetchTemprature(
@@ -48,6 +50,7 @@ const updateTemperatures = async () => {
     await client.query("ROLLBACK");
   } finally {
     client.release();
+    return;
   }
 };
 export default updateTemperatures;

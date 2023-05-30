@@ -32,12 +32,13 @@ export const createLocation = async (req, res) => {
 
   const queryString = `
     INSERT INTO "location" (slugname, longitude, latitude, creationdate) VALUES ('${slugname.trim()}', '${longitude}', '${latitude}', '${currentDate}') RETURNING *;
+    INSERT INTO "tempratures" (slugname, min_temprature, max_temprature, date) VALUES ('${slugname.trim()}', '${minTemp}', '${maxTemp}', '${currentDate}' ) RETURNING *;
   `;
 
   try {
     // Executes the queries and handles the results
     const queryResult = await poolQuery(queryString);
-    const insertionQueryRows = queryResult.rows[0];
+    const insertionQueryRows = queryResult[0].rows[0];
     console.log("insertionQueryRows", insertionQueryRows);
     const { id: resultId, slugname: resultSlugname } = insertionQueryRows;
 
@@ -157,18 +158,18 @@ export const updateLocation = async (req, res) => {
   const encodedOldSlugname = encodeURIComponent(oldSlugname.trim());
   const queryString = `
   UPDATE "location" SET slugname = '${encodedNewSlugname}' WHERE slugname = '${encodedOldSlugname}' RETURNING *;
-  UPDATE "tempratures" SET slugname = '${encodedNewSlugname}' WHERE slugname = '${encodedOldSlugname}' RETURNING *;
   `;
 
   // Execute and handle UPDATE query
   try {
     const queryResult = await poolQuery(queryString);
-    if (queryResult[0].rowCount === 0) {
+    console.log("queryResult", queryResult);
+    if (queryResult.rowCount === 0) {
       // No location found
       res.status(404).send("Location does not exist");
       return;
     }
-    const queryResultRows = queryResult[0].rows[0];
+    const queryResultRows = queryResult.rows[0];
 
     // Extract the relevant location data from the query result
     const {

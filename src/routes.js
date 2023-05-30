@@ -8,7 +8,6 @@ import {
 import {
   getAllTempratures,
   getTempraturesWithDate,
-  dummy,
 } from "./controllers/temprature.js";
 import { Router } from "express";
 
@@ -24,5 +23,4 @@ router.get("/getAllLocations", getAllLocations);
 //Temprature GET routes
 router.get("/getAllTempratures", getAllTempratures);
 router.get("/getTempraturesWithDate", getTempraturesWithDate);
-router.get("/dummy", dummy);
 export default router;
