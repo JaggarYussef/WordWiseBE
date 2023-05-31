@@ -1,5 +1,4 @@
 import { poolQuery } from "../database.js";
-import updateTemperatures from "./utils/temperatureUpdater.js";
 
 /**
  * Retrieves all temperature records from the database.
@@ -73,7 +72,4 @@ export const getTempraturesWithDate = async (req, res, next) => {
     // Handle errors
     res.status(500).send({ error: error.message });
   }
-};
-export const dummy = async (req, res) => {
-  updateTemperatures();
 };

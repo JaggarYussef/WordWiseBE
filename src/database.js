@@ -80,7 +80,6 @@ export const getClient = async () => {
   }, 5000);
 
   /**
-   * Monkey patches the client's query method to keep track of the last executed query.
    * @param {...*} args - The arguments passed to the query method.
    * @returns {*} The result of the original query method.
    */
