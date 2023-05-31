@@ -32,10 +32,10 @@ dotenv.config();
 )
  */
 const pool = new pg.Pool({
-  host: "seven-timer.cqqxczfso2zd.eu-north-1.rds.amazonaws.com",
+  host: process.env.DATABASE_HOST,
   port: "5432",
   user: "postgres",
-  password: "Z8z94!sBoJQC",
+  password: process.env.DATABASE_PASSWORD,
   database: "7timer",
 });
 
