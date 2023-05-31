@@ -54,6 +54,8 @@ This will use Nodemon to manage the application's lifecycle.
 
 ## Usage
 
+There are two main endpoints, **/api/location/** and **temprature** to perfrom the described CRUD functions:
+
 ### Locations
 
 **Create**: Add a new location by providing a value for the **latitude** and **longitude** keys using `x-www-form-urlencoded` encoding.
