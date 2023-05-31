@@ -32,7 +32,7 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message });
 });
 
-app.listen(8080, () => console.log("server is running"));
+app.listen(8080, () => console.log("server is running on localhost:8080/"));
 cron.schedule("8 1 * * *", () => {
   updateTemperatures();
 });
