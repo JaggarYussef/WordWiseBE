@@ -1,5 +1,5 @@
 import { poolQuery } from "../database.js";
-import fetchTemprature from "./utils/tempratureFetcher.js";
+import fetchtemperature from "./utils/temperatureFetcher.js";
 import validateCoordinates from "./utils/coordinatesValidator.js";
 
 const currentDate = new Date().toISOString().slice(0, 10);
@@ -24,7 +24,7 @@ export const createLocation = async (req, res) => {
   }
 
   // Fetches temperature data for the location
-  const { minTemp, maxTemp, slugname } = await fetchTemprature(
+  const { minTemp, maxTemp, slugname } = await fetchtemperature(
     latitude,
     longitude,
     true
@@ -32,7 +32,7 @@ export const createLocation = async (req, res) => {
 
   const queryString = `
     INSERT INTO "location" (slugname, longitude, latitude, creationdate) VALUES ('${slugname.trim()}', '${longitude}', '${latitude}', '${currentDate}') RETURNING *;
-    INSERT INTO "tempratures" (slugname, min_temprature, max_temprature, date) VALUES ('${slugname.trim()}', '${minTemp}', '${maxTemp}', '${currentDate}' ) RETURNING *;
+    INSERT INTO "temperatures" (slugname, min_temperature, max_temperature, date) VALUES ('${slugname.trim()}', '${minTemp}', '${maxTemp}', '${currentDate}' ) RETURNING *;
   `;
 
   try {
@@ -154,8 +154,12 @@ export const updateLocation = async (req, res) => {
     return;
   }
 
-  const encodedNewSlugname = encodeURIComponent(newSlugname.trim());
-  const encodedOldSlugname = encodeURIComponent(oldSlugname.trim());
+  const encodedNewSlugname = encodeURIComponent(
+    newSlugname.trim().toLowerCase()
+  );
+  const encodedOldSlugname = encodeURIComponent(
+    oldSlugname.trim().toLowerCase()
+  );
   const queryString = `
   UPDATE "location" SET slugname = '${encodedNewSlugname}' WHERE slugname = '${encodedOldSlugname}' RETURNING *;
   `;

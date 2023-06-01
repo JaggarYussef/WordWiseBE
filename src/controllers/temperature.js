@@ -1,4 +1,5 @@
 import { poolQuery } from "../database.js";
+import updateTemperatures from "./utils/temperatureUpdater.js";
 
 /**
  * Retrieves all temperature records from the database.
@@ -6,10 +7,10 @@ import { poolQuery } from "../database.js";
  * @param {Object} res - The response object.
  * @returns {Promise<void>} - A promise that resolves when the temperature records are retrieved and sent as a response.
  */
-export const getAllTempratures = async (req, res) => {
-  const queryString = `SELECT "slugname", to_char(date,'YYYY-MM-DD') AS date, "min_temprature", "max_temprature" FROM "tempratures" ORDER BY date `;
+export const getAlltemperatures = async (req, res) => {
+  const queryString = `SELECT "slugname", to_char(date,'YYYY-MM-DD') AS date, "min_temperature", "max_temperature" FROM "temperatures" ORDER BY date `;
 
-  // Execute and handle SELECT all temperatures query;
+  // Execute and handle query;
   try {
     const queryResult = await poolQuery(queryString);
     console.log("queryResult", queryResult);
@@ -29,7 +30,7 @@ export const getAllTempratures = async (req, res) => {
 };
 
 // Retrieves temperature records from the database based on the provided start date, end date, and slugname.
-export const getTempraturesWithDate = async (req, res, next) => {
+export const gettemperaturesWithDate = async (req, res, next) => {
   const { startDate, endDate, slugname } = req.body;
   console.log("req.body", req.body);
 
@@ -48,14 +49,14 @@ export const getTempraturesWithDate = async (req, res, next) => {
   }
 
   // Encoding the slugname and formatting the dates
-  const encodedSlugname = encodeURIComponent(slugname.trim());
+  const encodedSlugname = encodeURIComponent(slugname.trim().toLowerCase());
   const formattedStartDate = new Date(startDate).toISOString().slice(0, 10);
   const formattedEndDate = new Date(endDate).toISOString().slice(0, 10);
 
   const queryString = `
-   SELECT "slugname", to_char(date,'YYYY-MM-DD') AS date, "min_temprature", "max_temprature" FROM "tempratures"
+   SELECT "slugname", to_char(date,'YYYY-MM-DD') AS date, "min_temperature", "max_temperature" FROM "temperatures"
    WHERE slugname = '${encodedSlugname}' AND
-  "date" BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'`;
+  "date" BETWEEN '${formattedStartDate}' AND '${formattedEndDate}' ORDER BY "date" `;
 
   // Execute the query and handle the results
   try {
@@ -72,4 +73,8 @@ export const getTempraturesWithDate = async (req, res, next) => {
     // Handle errors
     res.status(500).send({ error: error.message });
   }
+};
+
+export const dummy = (req, res) => {
+  updateTemperatures();
 };

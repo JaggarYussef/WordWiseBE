@@ -6,9 +6,10 @@ import {
   getAllLocations,
 } from "./controllers/location.js";
 import {
-  getAllTempratures,
-  getTempraturesWithDate,
-} from "./controllers/temprature.js";
+  getAlltemperatures,
+  gettemperaturesWithDate,
+  dummy,
+} from "./controllers/temperature.js";
 import { Router } from "express";
 
 const router = Router();
@@ -20,7 +21,8 @@ router.delete("/deleteLocation", deleteLocation);
 router.put("/updateLocation", updateLocation);
 router.get("/getAllLocations", getAllLocations);
 
-//Temprature GET routes
-router.get("/getAllTempratures", getAllTempratures);
-router.get("/getTempraturesWithDate", getTempraturesWithDate);
+//temperature GET routes
+router.get("/getAllTemperatures", getAlltemperatures);
+router.get("/getTemperaturesWithDate", gettemperaturesWithDate);
+router.get("/dummy", dummy);
 export default router;

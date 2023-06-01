@@ -22,14 +22,15 @@ To interact with the server, send CRUD (Create, Read, Update, Delete) requests u
 - 📦 Package Installer: NPM
 - 📚 Libraries:
 
+  - [PG-node](https://www.npmjs.com/package/pg)
+  - [Transliteration.js](https://www.npmjs.com/package/transliteration)
+  - [Nodemon](https://www.npmjs.com/package/nodemon)
+  - [NodeFetch](https://www.npmjs.com/package/node-fetch)
+  - [Prettier](https://www.npmjs.com/package/prettier)
+  - [Node-cron](https://www.npmjs.com/package/node-cron)
 
-    -   [PG-node](https://www.npmjs.com/package/pg)
-    -   [Transliteration.js](https://www.npmjs.com/package/transliteration)
-    -   [Nodemon](https://www.npmjs.com/package/nodemon)
-    -   [NodeFetch](https://www.npmjs.com/package/node-fetch)
-    -   [Prettier](https://www.npmjs.com/package/prettier)
-    -   [Node-cron](https://www.npmjs.com/package/node-cron)
 ---
+
 ## Installation
 
 The application requires no installation and can be accessed with an API development tool at https://seventimer.onrender.com/. However, it can also be installed on a local machine by cloning the repository and executing the following scripts:
@@ -51,18 +52,16 @@ This will use Nodemon to manage the application's lifecycle.
 
 ---
 
-
 ## Usage
 
-There are two main endpoints, **/api/location/** and **temprature** to perfrom the described CRUD functions:
+There are two main endpoints, **/api/location/** and **temperature** to perfrom the described CRUD functions:
 
 ### Locations
 
 **Create**: Add a new location by providing a value for the **latitude** and **longitude** keys using `x-www-form-urlencoded` encoding.
 
 > latitude: 51.906563
-longitude: 4.2728286
-> 
+> longitude: 4.2728286
 
 ```
 POST: /api/location/addLocation =>
@@ -71,14 +70,11 @@ Use slug name vlaardingen to retrieve data related to the location.
 
 ```
 
-
-
 **Read**: Retrieve a location by ID or slug name.
 
 > slug name: vlaardingen
-or
-ID: 68
-> 
+> or
+> ID: 68
 
 ```
 GET /api/location/getLocation =>
@@ -91,7 +87,6 @@ GET /api/location/getLocation =>
 }
 
 ```
-
 
 **Read**: Retrieve all location records.
 
@@ -116,13 +111,11 @@ GET /api/location/getAllLocations =>
 
 ```
 
-
 **Delete**: Delete a location and its related temperature records by slug name or ID.
 
 > slug name: vlaardingen
-or
-ID: 68
-> 
+> or
+> ID: 68
 
 ```
 DELETE /api/location/deleteLocation =>
@@ -133,8 +126,7 @@ Location with ID: 68 and slug name vlaardigen has been deleted.
 **Update**: Update old slug name with new slug name for a location.
 
 > old slug name: nhr-lnyl
-new slug name: test
-> 
+> new slug name: test
 
 ```
 UPDATE /api/location/updateLocation =>
@@ -148,6 +140,7 @@ Location with slug name nhr-lnyl has been updated.
 }
 
 ```
+
 ---
 
 ### Temperatures
@@ -173,17 +166,14 @@ GET /api/temperature/getAllTemperatures =>
 
 ```
 
-
-
 **Read**: Retrieve all temperature records within a time range by using the location's **slug name**, **start date**, and **end date**.
 
 > slug name: mon
-start date: 2023-05-28
-end date: 2023-06-01
-> 
+> start date: 2023-05-28
+> end date: 2023-06-01
 
 ```
-GET /api/location/getTemperaturesWithDate =>
+GET /api/temperature/getTemperaturesWithDate =>
 [
   {
     "slugname":  "mon",
