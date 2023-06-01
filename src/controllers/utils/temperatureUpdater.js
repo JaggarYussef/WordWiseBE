@@ -1,17 +1,18 @@
 import { getClient } from "../../database.js";
-import fetchTemprature from "./tempratureFetcher.js";
+import fetchTemperature from "./temperatureFetcher.js";
 
 /**
  * Updates temperature records for locations stored in the database.
  * @returns {Promise<void>} - A promise that resolves when the temperature records are updated.
  */
 const updateTemperatures = async () => {
+  const currentDate = new Date().toISOString().slice(0, 10);
   const client = await getClient();
   try {
     await client.query("BEGIN");
 
     // Retrieves locations from the "location" table
-    const selectLocationsQuery = `SELECT "slugname", "latitude", "longitude" FROM "location" `;
+    const selectLocationsQuery = `SELECT "slugname", "latitude", "longitude" FROM "location" WHERE creationdate !=  '${currentDate}' `;
     const queryResult = await client.query(selectLocationsQuery);
     console.log("queryResult", queryResult);
 
@@ -19,21 +20,20 @@ const updateTemperatures = async () => {
     const temperatureRecords = await Promise.all(
       queryResult.rows.map(async (location) => {
         const { slugname, latitude, longitude } = location;
-        const randomNumber = Math.floor(Math.random() * 10000) + 1;
 
         // Fetches temperature data for the location
-        const { minTemp, maxTemp, date } = await fetchTemprature(
+        const { minTemp, maxTemp, date } = await fetchTemperature(
           latitude,
           longitude,
           slugname
         );
 
-        const tempratureUpdateQuery = `
-          INSERT INTO "tempratures"("slugname", "min_temprature", "max_temprature","date")
+        const temperatureUpdateQuery = `
+          INSERT INTO "temperatures"("slugname", "min_temperature", "max_temperature","date")
           VALUES('${slugname}', ${minTemp}, ${maxTemp}, '${date}')
         `;
 
-        return tempratureUpdateQuery;
+        return temperatureUpdateQuery;
       })
     );
 

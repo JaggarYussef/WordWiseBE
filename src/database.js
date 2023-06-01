@@ -21,10 +21,10 @@ dotenv.config();
 (
     id integer NOT NULL,
     slugname character varying(255) NOT NULL,
-    min_temprature integer NOT NULL,
-    max_temprature integer NOT NULL,
+    min_temperature integer NOT NULL,
+    max_temperature integer NOT NULL,
     date date NOT NULL,
-    CONSTRAINT tempratures_pkey PRIMARY KEY (id),
+    CONSTRAINT temperatures_pkey PRIMARY KEY (id),
     CONSTRAINT foreign_key FOREIGN KEY (slugname)
         REFERENCES public.location (slugname) MATCH SIMPLE
         ON UPDATE CASCADE
