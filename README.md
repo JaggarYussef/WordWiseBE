@@ -2,7 +2,7 @@
 
 🌡️📝 This is a backend application designed to store maximum and minimum temperatures for a given location using the [7Timer](http://www.7timer.info/doc.php?lang=en#introduction) API. The application is built using Node.js and leverages the Express.js framework to streamline server configuration. The temperature data is stored in a PostgreSQL database hosted on AWS' RDS.
 
-To execute scheduled functions and serve the archived records, the application is deployed on [Render.com](http://render.com/).
+To execute scheduled functions and serve the archived records, the application is deployed on AWS' EC2 http://ec2-13-48-46-75.eu-north-1.compute.amazonaws.com:8080/.
 
 To interact with the server, send CRUD (Create, Read, Update, Delete) requests using your preferred API development tool. Ensure that the necessary key-value pairs are included in the request body using the `x-www-form-urlencoded` encoding.
 
@@ -18,7 +18,7 @@ To interact with the server, send CRUD (Create, Read, Update, Delete) requests u
 - 💻 Programming Language: JavaScript
 - 🌐 Framework: Node.js with Express.js
 - 🗄️ Database: PostgreSQL
-- ☁️ Deployment: AWS RDS and Render
+- ☁️ Deployment: AWS RDS and EC2
 - 📦 Package Installer: NPM
 - 📚 Libraries:
 
@@ -33,7 +33,7 @@ To interact with the server, send CRUD (Create, Read, Update, Delete) requests u
 
 ## Installation
 
-The application requires no installation and can be accessed with an API development tool at https://seventimer.onrender.com/. However, it can also be installed on a local machine by cloning the repository and executing the following scripts:
+The application requires no installation and can be accessed with an API development tool at http://ec2-13-48-46-75.eu-north-1.compute.amazonaws.com:8080/. However, it can also be installed on a local machine by cloning the repository and executing the following scripts:
 To install packages:
 
 ```
