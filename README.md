@@ -33,7 +33,7 @@ To interact with the server, send CRUD (Create, Read, Update, Delete) requests u
 
 ## Installation
 
-The application requires no installation and can be accessed with an API development tool at http://ec2-13-48-46-75.eu-north-1.compute.amazonaws.com:8080/. However, it can also be installed on a local machine by cloning the repository and executing the following scripts:
+The application requires no installation and can be accessed with an API development tool at ec2-18-192-8-128.eu-central-1.compute.amazonaws.com:8080/. However, it can also be installed on a local machine by cloning the repository and executing the following scripts:
 To install packages:
 
 ```
