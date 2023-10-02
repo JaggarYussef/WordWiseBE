@@ -1,8 +1,8 @@
 import express from "express";
 import bodyParser from "body-parser";
 import router from "./src/routes.js";
-import updateTemperatures from "./src/controllers/utils/temperatureUpdater.js";
-import cron from "node-cron";
+import cors from "cors";
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,15 +15,10 @@ app.use((req, res, next) => {
 
 // Test route
 app.get("/", (req, res, next) => {
-  res.send("Hello World");
+  console.log("body", req.body);
 });
 
-// Location CRUD routes
-app.use("/api/location", router);
-
-// temperature GET routes
-app.use("/api/temperature", router);
-
+app.use("/api/words", router);
 // Error handling
 app.use((error, req, res, next) => {
   console.log(error);
@@ -33,6 +28,3 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(8080, () => console.log("server is running on localhost:8080/"));
-cron.schedule("8 1 * * *", () => {
-  updateTemperatures();
-});

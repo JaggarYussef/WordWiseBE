@@ -1,26 +1,7 @@
-import {
-  createLocation,
-  getLocation,
-  deleteLocation,
-  updateLocation,
-  getAllLocations,
-} from "./controllers/location.js";
-import {
-  getAlltemperatures,
-  gettemperaturesWithDate,
-} from "./controllers/temperature.js";
 import { Router } from "express";
-
+import { createWord } from "./controllers/words.js";
 const router = Router();
 
-//Location CRUD routes
-router.post("/addLocation", createLocation);
-router.get("/getLocation", getLocation);
-router.delete("/deleteLocation", deleteLocation);
-router.put("/updateLocation", updateLocation);
-router.get("/getAllLocations", getAllLocations);
+router.post("/", createWord);
 
-//temperature GET routes
-router.get("/getAllTemperatures", getAlltemperatures);
-router.get("/getTemperaturesWithDate", gettemperaturesWithDate);
 export default router;
