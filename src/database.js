@@ -2,41 +2,20 @@ import pg from "pg";
 import dotenv from "dotenv";
 dotenv.config();
 /* 
-* LOCATION  TABLE SCRIPT 
-*
-(
-    id integer NOT NULL,
-    slugname character varying(255) NOT NULL,
-    latitude real,
-    longitude real,
-    creationdate date,
-    CONSTRAINT location_pkey PRIMARY KEY (id),
-    CONSTRAINT unique_slug UNIQUE (slugname)
-)
+CREATE TABLE words (
+    id SERIAL PRIMARY KEY,
+    word VARCHAR(255),
+    phonetic VARCHAR(255),
+    meaning VARCHAR(255)
+);
 
-*/
-
-/*
- * TEMPERATURE TABLE SCRIPT
-(
-    id integer NOT NULL,
-    slugname character varying(255) NOT NULL,
-    min_temperature integer NOT NULL,
-    max_temperature integer NOT NULL,
-    date date NOT NULL,
-    CONSTRAINT temperatures_pkey PRIMARY KEY (id),
-    CONSTRAINT foreign_key FOREIGN KEY (slugname)
-        REFERENCES public.location (slugname) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-)
  */
 const pool = new pg.Pool({
   host: process.env.DATABASE_HOST,
   port: "5432",
   user: "postgres",
-  password: process.env.DATABASE_PASSWORD,
-  database: "7timer",
+  password: "mysecretpassword",
+  database: "postgres",
 });
 
 /**
