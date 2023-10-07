@@ -1,6 +1,5 @@
 import pg from "pg";
-import dotenv from "dotenv";
-dotenv.config();
+
 /* 
 CREATE TABLE words (
     id SERIAL PRIMARY KEY,
@@ -10,9 +9,13 @@ CREATE TABLE words (
 );
 
  */
+
+//TODO:
+// - fix type checks on client.querry
+
 const pool = new pg.Pool({
   host: process.env.DATABASE_HOST,
-  port: "5432",
+  port: 5432,
   user: "postgres",
   password: "mysecretpassword",
   database: "postgres",
@@ -25,7 +28,7 @@ const pool = new pg.Pool({
  * @param {string} poolQueryString - The query string to execute.
  * @returns {Promise<Object>} A promise that resolves to the query result.
  */
-export const poolQuery = async (poolQueryString) => {
+export const poolQuery = async (poolQueryString: string) => {
   const start = Date.now();
   const result = await pool.query(poolQueryString);
   const duration = Date.now() - start;
@@ -53,17 +56,19 @@ export const getClient = async () => {
   // Set a timeout of 5 seconds, after which the client's last query will be logged
   const timeout = setTimeout(() => {
     console.error("A client has been checked out for more than 5 seconds!");
-    console.error(
-      `The last executed query on this client was: ${client.lastQuery}`
-    );
+    // console.error(
+    //   `The last executed query on this client was: ${client.lastQuery}`
+    // );
   }, 5000);
 
   /**
    * @param {...*} args - The arguments passed to the query method.
    * @returns {*} The result of the original query method.
    */
+  //@ts-ignore
   client.query = (...args) => {
-    client.lastQuery = args;
+    // client.lastQuery = args;
+    //@ts-ignore
     return query.apply(client, args);
   };
 
